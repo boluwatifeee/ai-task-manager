@@ -1,36 +1,43 @@
 import { useEffect, useState } from "react";
 import TaskList from "./components/TaskList";
-import type { Task } from "./types";
+import { Task, TaskStatus } from "./types";
+import { createTask, deleteTask, getTasks } from "./api/tasks";
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: "1",
-      title: "First task",
-      description: "Setup project",
-      status: "todo",
-    },
-    {
-      id: "2",
-      title: "Second task",
-      description: "Add Tailwind",
-      status: "done",
-    },
-  ]);
-
-  const [message, setMessage] = useState("");
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [newTask, setNewTask] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/hello")
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((err) => console.error(err));
+    fetchTasks();
   }, []);
+
+  const fetchTasks = async () => {
+    const data = await getTasks();
+    setTasks(data);
+  };
+
+  const handleAddTask = async () => {
+    if (!newTask.trim()) return;
+    const task = await createTask({
+      title: newTask,
+      status: TaskStatus.TODO,
+      description: "",
+      id: "",
+    });
+    setTasks([...tasks, task]);
+    setNewTask("");
+  };
+
+  const handleDelete = async (id?: string) => {
+    if (!id) return;
+    await deleteTask(id);
+    setTasks(tasks.filter((t) => t.id !== id));
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-blue-600 mb-4">
-        AI Task Manager 🚀 {message}
+        AI Task Manager 🚀
       </h1>
       <TaskList tasks={tasks} />
     </div>
