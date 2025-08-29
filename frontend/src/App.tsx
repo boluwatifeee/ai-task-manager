@@ -36,9 +36,17 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-blue-600 mb-4">
-        AI Task Manager 🚀
-      </h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold text-blue-600 mb-4">
+          AI Task Manager 🚀
+        </h1>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+          onClick={handleAddTask}
+        >
+          Add Task
+        </button>
+      </div>
       <TaskList tasks={tasks} />
     </div>
   );
